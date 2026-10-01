@@ -199,7 +199,7 @@
           </div>
           <div>
             <label for="combinaConta">Conta de Cliente</label>
-            <input id="combinaConta" name="conta" type="text" required placeholder="N.º da conta" />
+            <input id="combinaConta" name="conta" type="text" required placeholder="Ex.: C42837485" pattern="[Cc][0-9]{8,}" title="A conta deve começar por C e ter pelo menos 8 números. Ex.: C42837485" />
           </div>
           <div>
             <label for="combinaData">Data do Registo</label>
@@ -241,7 +241,7 @@
           </div>
           <div>
             <label for="energiaConta">Conta de Cliente</label>
-            <input id="energiaConta" name="conta" type="text" required placeholder="N.º da conta" />
+            <input id="energiaConta" name="conta" type="text" required placeholder="Ex.: C42837485" pattern="[Cc][0-9]{8,}" title="A conta deve começar por C e ter pelo menos 8 números. Ex.: C42837485" />
           </div>
           <div>
             <label for="energiaData">Data do Registo</label>
@@ -409,15 +409,33 @@
       });
     });
 
+    function validarContaCliente(valor){
+      return /^C\d{8,}$/i.test(String(valor || '').trim());
+    }
+
+    function normalizarContaCliente(valor){
+      return String(valor || '').trim().toUpperCase();
+    }
+
     async function adicionar(tipo, form, statusId){
       const status = document.getElementById(statusId);
       const submit = form.querySelector('button[type="submit"]');
       const fd = new FormData(form);
 
+      const conta = normalizarContaCliente(fd.get('conta'));
+
+      if(!validarContaCliente(conta)){
+        alert('Conta de Cliente incorreta.\n\nA conta deve começar por C e ter pelo menos 8 números.\nExemplo: C42837485');
+        const campoConta = form.querySelector('[name="conta"]');
+        campoConta.focus();
+        campoConta.select();
+        return;
+      }
+
       const reg = {
         tipo,
         nome:String(fd.get('nome') || '').trim(),
-        conta:String(fd.get('conta') || '').trim(),
+        conta,
         data:String(fd.get('data') || ''),
         obs:String(fd.get('obs') || '').trim(),
         client_key:'web:' + (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}:${Math.random()}`)
@@ -447,6 +465,13 @@
         submit.disabled = false;
       }
     }
+
+    ['combinaConta','energiaConta'].forEach(id => {
+      const campo = document.getElementById(id);
+      campo.addEventListener('input', () => {
+        campo.value = campo.value.toUpperCase().replace(/\s+/g,'');
+      });
+    });
 
     document.getElementById('formCombina').addEventListener('submit', e => {
       e.preventDefault();
