@@ -63,6 +63,10 @@
       background:#f3f4f6;color:#4b5563;cursor:not-allowed;font-weight:700
     }
     .actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+    .form-card .actions{justify-content:center;align-items:center}
+    .faq-inline-wrap{display:flex;justify-content:center;margin-top:10px}
+    .faq-inline-btn{background:#fff;color:#555;border:1px solid #d1d5db;padding:7px 14px;font-size:12px;min-width:82px}
+    .faq-inline-btn:hover{background:#f7f7f7}
     button{border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-size:14px}
     button:disabled{opacity:.6;cursor:not-allowed}
     .primary{background:linear-gradient(90deg,var(--accent-red),var(--accent-orange));color:#fff}
@@ -94,18 +98,24 @@
       background:linear-gradient(90deg,var(--accent-red),var(--accent-orange))
     }
 
-    .password-modal,.faq-modal,.ranking-modal{
+    .password-modal,.faq-modal,.ranking-modal,.success-modal{
       position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;
       justify-content:center;padding:20px;z-index:9999
     }
     .faq-modal{z-index:10000}
     .ranking-modal{z-index:10001}
-    .password-box,.faq-box,.ranking-box{
+    .success-modal{z-index:10002}
+    .password-box,.faq-box,.ranking-box,.success-box{
       background:#fff;border-radius:18px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.28)
     }
     .password-box{width:min(420px,100%)}
     .faq-box{width:min(560px,100%);max-height:85vh;overflow:auto}
     .ranking-box{width:min(760px,100%);max-height:88vh;overflow:auto}
+    .success-box{width:min(390px,100%);text-align:center}
+    .success-icon{font-size:34px;margin-bottom:8px}
+    .success-box h3{margin:0 0 8px;font-size:20px}
+    .success-box p{margin:0;color:var(--muted);font-size:14px}
+    .success-close{width:100%;margin-top:20px;background:#222;color:#fff}
     .password-box h3,.faq-box h3,.ranking-box h3{margin:0 0 10px}
     .password-box p,.ranking-subtitle{margin:0 0 16px;color:var(--muted);font-size:13px}
     .password-error{color:var(--danger);font-size:13px;font-weight:700;min-height:18px;margin-top:10px}
@@ -215,6 +225,9 @@
           <button class="primary" type="submit">Guardar registo</button>
           <button class="secondary" type="reset">Limpar</button>
         </div>
+        <div class="faq-inline-wrap">
+          <button class="faq-inline-btn abrirFaqBtn" type="button">FAQ</button>
+        </div>
         <div class="status" id="statusCombina"></div>
       </form>
     </section>
@@ -257,6 +270,9 @@
           <button class="primary" type="submit">Guardar registo</button>
           <button class="secondary" type="reset">Limpar</button>
         </div>
+        <div class="faq-inline-wrap">
+          <button class="faq-inline-btn abrirFaqBtn" type="button">FAQ</button>
+        </div>
         <div class="status" id="statusEnergia"></div>
       </form>
     </section>
@@ -265,7 +281,6 @@
       <div id="recordsLocked" class="records-locked">
         <div class="gl-actions">
           <button class="unlock-btn" id="abrirRegistos" type="button">Acesso GL</button>
-          <button id="abrirFaq" class="faq-gl-btn" type="button">FAQ</button>
         </div>
       </div>
 
@@ -332,6 +347,15 @@
       <p class="ranking-subtitle">Posição atual dos ALs e identificação do vencedor quando cumprir os critérios.</p>
       <div id="rankingConteudo"></div>
       <button id="fecharRanking" class="ranking-close" type="button">Fechar</button>
+    </div>
+  </div>
+
+  <div id="successModal" class="success-modal hidden" aria-hidden="true">
+    <div class="success-box" role="dialog" aria-modal="true" aria-labelledby="successTitle">
+      <div class="success-icon">✅</div>
+      <h3 id="successTitle">Registo guardado</h3>
+      <p>O registo foi guardado com sucesso.</p>
+      <button id="fecharSuccess" class="success-close" type="button">Fechar</button>
     </div>
   </div>
 
@@ -417,6 +441,18 @@
       return String(valor || '').trim().toUpperCase();
     }
 
+    function mostrarSuccess(){
+      const modal = document.getElementById('successModal');
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden','false');
+    }
+
+    function ocultarSuccess(){
+      const modal = document.getElementById('successModal');
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden','true');
+    }
+
     async function adicionar(tipo, form, statusId){
       const status = document.getElementById(statusId);
       const submit = form.querySelector('button[type="submit"]');
@@ -448,8 +484,7 @@
 
         await api('add', {record:reg});
 
-        status.style.color = 'var(--success)';
-        status.textContent = 'Registo guardado com sucesso.';
+        status.textContent = '';
         form.reset();
         aplicarDataHoje();
 
@@ -457,7 +492,7 @@
           await carregarRegistosGL();
         }
 
-        setTimeout(() => status.textContent = '', 2500);
+        mostrarSuccess();
       }catch(err){
         status.style.color = 'var(--danger)';
         status.textContent = err.message || 'Não foi possível guardar o registo.';
@@ -775,7 +810,9 @@
         rankingModal.setAttribute('aria-hidden','true');
       }
 
-      document.getElementById('abrirFaq').addEventListener('click', mostrarFaq);
+      document.querySelectorAll('.abrirFaqBtn').forEach(btn => {
+        btn.addEventListener('click', mostrarFaq);
+      });
       document.getElementById('fecharFaq').addEventListener('click', ocultarFaq);
 
       document.getElementById('abrirRanking').addEventListener('click', async () => {
@@ -794,6 +831,12 @@
 
       document.getElementById('fecharRanking').addEventListener('click', ocultarRanking);
 
+      const successModal = document.getElementById('successModal');
+      document.getElementById('fecharSuccess').addEventListener('click', ocultarSuccess);
+      successModal.addEventListener('click', e => {
+        if(e.target === successModal) ocultarSuccess();
+      });
+
       faqModal.addEventListener('click', e => {
         if(e.target === faqModal) ocultarFaq();
       });
@@ -805,6 +848,7 @@
         if(e.key === 'Escape'){
           if(!faqModal.classList.contains('hidden')) ocultarFaq();
           if(!rankingModal.classList.contains('hidden')) ocultarRanking();
+          if(!document.getElementById('successModal').classList.contains('hidden')) ocultarSuccess();
         }
       });
     });
