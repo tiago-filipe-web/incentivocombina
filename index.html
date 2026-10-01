@@ -75,6 +75,10 @@
       text-align:center;padding:26px 18px;border:1px dashed #d1d5db;border-radius:14px;background:#fafafa
     }
     .unlock-btn{background:#222;color:#fff}
+    .gl-actions{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap}
+    .gl-actions button{min-width:140px;text-align:center}
+    .faq-gl-btn{background:#fff;color:#222;border:1px solid #d1d5db}
+    .faq-gl-btn:hover{background:#f7f7f7}
     .lock-btn{background:#f3f4f6;color:#111;border:1px solid var(--line)}
     .records-head{
       display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px
@@ -137,6 +141,8 @@
     .ranking-section-title{font-weight:900;font-size:17px;margin:4px 0 10px}
 
     @media(max-width:700px){
+      .gl-actions{flex-wrap:nowrap}
+      .gl-actions button{min-width:0;flex:1;max-width:180px}
       .tabs-row:first-child{flex-wrap:nowrap}
       .tabs-row:first-child .tab{min-width:0;flex:1;max-width:190px}
       .grid{grid-template-columns:1fr}
@@ -167,7 +173,6 @@
         <button class="tab tab-energia" data-tab="energia">ENERGIA</button>
       </div>
       <div class="tabs-row">
-        <button id="abrirFaq" class="tab faq-tab" type="button">FAQ</button>
         <button id="abrirRanking" class="tab ranking-tab" type="button">RANKING</button>
       </div>
     </div>
@@ -258,7 +263,10 @@
 
     <section class="card">
       <div id="recordsLocked" class="records-locked">
-        <button class="unlock-btn" id="abrirRegistos" type="button">Acesso GL</button>
+        <div class="gl-actions">
+          <button class="unlock-btn" id="abrirRegistos" type="button">Acesso GL</button>
+          <button id="abrirFaq" class="faq-gl-btn" type="button">FAQ</button>
+        </div>
       </div>
 
       <div id="recordsUnlocked" class="hidden">
