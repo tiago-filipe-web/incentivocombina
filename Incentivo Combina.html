@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registo de Vendas - Combina & Energia</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --card:#ffffff;
+      --text:#1b1f24;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --accent-red:#e31b13;
+      --accent-orange:#ff6b00;
+      --accent-dark:#222222;
+      --success:#16803a;
+      --danger:#b42318;
+      --shadow:0 10px 24px rgba(0,0,0,.06);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .wrap{
+      max-width:980px;
+      margin:28px auto;
+      padding:0 18px 40px;
+    }
+    .header{
+      background:#ffffff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:24px 30px;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+      text-align:center;
+    }
+    .header img{
+      max-width:360px;
+      width:100%;
+      height:auto;
+      display:block;
+      margin:0 auto 14px;
+    }
+    .header h1{margin:0 0 6px;font-size:28px;color:var(--accent-dark)}
+    .header p{margin:0;color:var(--muted);font-size:14px}
+    .tabs{
+      display:flex;
+      gap:10px;
+      margin:20px 0;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border:1px solid var(--line);
+      background:white;
+      border-radius:999px;
+      padding:11px 18px;
+      cursor:pointer;
+      font-weight:700;
+      color:var(--accent-dark);
+    }
+    .tab.active{
+      background:linear-gradient(90deg,var(--accent-red),var(--accent-orange));
+      color:white;
+      border-color:transparent;
+    }
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:24px;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+      border:1px solid var(--line);
+    }
+    .card h2{margin:0 0 20px;font-size:21px}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:18px;
+    }
+    .field.full{grid-column:1/-1}
+    label{
+      display:block;
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:7px;
+    }
+    input, select, textarea{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:12px 13px;
+      font-size:15px;
+      outline:none;
+      background:white;
+    }
+    input:focus, select:focus, textarea:focus{
+      border-color:var(--accent-orange);
+      box-shadow:0 0 0 3px rgba(255,107,0,.12);
+    }
+    textarea{min-height:90px;resize:vertical}
+    .actions{
+      display:flex;
+      gap:10px;
+      margin-top:20px;
+      flex-wrap:wrap;
+    }
+    button{
+      border:0;
+      border-radius:10px;
+      padding:12px 18px;
+      font-weight:700;
+      cursor:pointer;
+      font-size:14px;
+    }
+    .primary{background:linear-gradient(90deg,var(--accent-red),var(--accent-orange));color:white}
+    .secondary{background:#f3f4f6;color:#111;border:1px solid var(--line)}
+    .danger{background:#fff0f0;color:var(--danger);border:1px solid #ffd0d0}
+    .hidden{display:none}
+    .status{
+      margin-top:14px;
+      font-size:14px;
+      font-weight:700;
+      color:var(--success);
+      min-height:18px;
+    }
+    .records-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .records-head h2{margin:0}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:14px;
+    }
+    th,td{
+      text-align:left;
+      padding:11px 10px;
+      border-bottom:1px solid var(--line);
+      vertical-align:top;
+    }
+    th{
+      background:#fafafa;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+    }
+    .badge{
+      display:inline-block;
+      border-radius:999px;
+      padding:5px 9px;
+      font-size:12px;
+      font-weight:700;
+      color:white;
+      background:linear-gradient(90deg,var(--accent-red),var(--accent-orange));
+    }
+    .empty{
+      text-align:center;
+      color:var(--muted);
+      padding:24px;
+    }
+    .small{font-size:12px;color:var(--muted)}
+    @media(max-width:700px){
+      .faq-tab{margin-left:0;}
+      .grid{grid-template-columns:1fr}
+      .field.full{grid-column:auto}
+      .header{padding:22px}
+      .card{padding:18px}
+      table{display:block;overflow-x:auto;white-space:nowrap}
+      .header img{max-width:280px}
+    }
+    @media print{
+      body{background:white}
+      .tabs,.actions,.records-head .right,.status{display:none!important}
+      .card,.header{box-shadow:none;border:1px solid #ddd}
+      .wrap{max-width:none;margin:0}
+    }
+  
+    .titulo-combina{color:#e30613;}
+    .titulo-energia{color:#f58220;}
+
+    .tab-combina{color:#e30613;}
+    .tab-energia{color:#f58220;}
+
+    .tab-combina.active{
+      background:#e30613;
+      color:#ffffff;
+      border-color:#e30613;
+    }
+    .tab-energia.active{
+      background:#f58220;
+      color:#ffffff;
+      border-color:#f58220;
+    }
+
+  
+    .records-locked{
+      text-align:center;
+      padding:26px 18px;
+      border:1px dashed #d1d5db;
+      border-radius:14px;
+      background:#fafafa;
+    }
+    .records-locked h3{
+      margin:0 0 8px;
+      font-size:18px;
+    }
+    .records-locked p{
+      margin:0 0 16px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .unlock-btn{
+      background:#222;
+      color:#fff;
+    }
+    .lock-btn{
+      background:#f3f4f6;
+      color:#111;
+      border:1px solid var(--line);
+    }
+    .password-modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.45);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      z-index:9999;
+    }
+    .password-modal.hidden{
+      display:none;
+    }
+    .password-box{
+      width:min(420px,100%);
+      background:white;
+      border-radius:16px;
+      padding:22px;
+      box-shadow:0 20px 60px rgba(0,0,0,.25);
+    }
+    .password-box h3{
+      margin:0 0 8px;
+    }
+    .password-box p{
+      margin:0 0 16px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .password-error{
+      color:var(--danger);
+      font-size:13px;
+      font-weight:700;
+      min-height:18px;
+      margin-top:10px;
+    }
+
+  
+    #combinaDataVisivel,
+    #energiaDataVisivel{
+      background:#f3f4f6;
+      color:#4b5563;
+      cursor:not-allowed;
+      font-weight:700;
+    }
+
+  
+    .faq-tab{
+      margin-left:auto;
+      background:#ffffff;
+      color:#222222;
+      border:1px solid #d1d5db;
+    }
+    .faq-tab:hover{
+      background:#f7f7f7;
+    }
+.faq-modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.45);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      z-index:10000;
+    }
+    .faq-modal.hidden{
+      display:none;
+    }
+    .faq-box{
+      width:min(560px,100%);
+      max-height:85vh;
+      overflow:auto;
+      background:#ffffff;
+      border-radius:18px;
+      padding:26px;
+      box-shadow:0 24px 70px rgba(0,0,0,.28);
+      text-align:left;
+    }
+    .faq-box h3{
+      margin:0 0 18px;
+      font-size:22px;
+      color:#222;
+    }
+    .faq-content{
+      font-size:15px;
+      line-height:1.65;
+      color:#222;
+    }
+    .faq-content .section-title{
+      font-weight:800;
+      margin-top:16px;
+      margin-bottom:4px;
+    }
+    .faq-content ul{
+      margin:6px 0 0 20px;
+      padding:0;
+    }
+    .faq-content li{
+      margin:4px 0;
+    }
+    .faq-close{
+      width:100%;
+      margin-top:22px;
+      background:#222;
+      color:#fff;
+    }
+    @media(max-width:700px){
+.faq-box{
+        padding:22px;
+      }
+    }
+
+  
+    .ranking-tab{
+      background:#ffffff;
+      color:#222222;
+      border:1px solid #d1d5db;
+    }
+    .ranking-tab:hover{
+      background:#f7f7f7;
+    }
+    .ranking-modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.45);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      z-index:10001;
+    }
+    .ranking-modal.hidden{
+      display:none;
+    }
+    .ranking-box{
+      width:min(760px,100%);
+      max-height:88vh;
+      overflow:auto;
+      background:#ffffff;
+      border-radius:18px;
+      padding:26px;
+      box-shadow:0 24px 70px rgba(0,0,0,.28);
+      text-align:left;
+    }
+    .ranking-box h3{
+      margin:0 0 8px;
+      font-size:23px;
+    }
+    .ranking-subtitle{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .ranking-table-wrap{
+      overflow-x:auto;
+    }
+    .ranking-table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:560px;
+    }
+    .ranking-table th,
+    .ranking-table td{
+      padding:12px 10px;
+      border-bottom:1px solid var(--line);
+    }
+    .ranking-table th{
+      background:#f8f8f8;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+    }
+    .ranking-table .pos{
+      width:64px;
+      text-align:center;
+      font-weight:800;
+    }
+    .ranking-table .num{
+      text-align:center;
+      font-weight:800;
+      width:100px;
+    }
+    .ranking-table .combina-num{
+      color:#e30613;
+    }
+    .ranking-table .energia-num{
+      color:#f58220;
+    }
+    .ranking-table .total-num{
+      color:#222;
+    }
+    .ranking-top1 td{
+      background:#fff9dc;
+    }
+    .ranking-top2 td{
+      background:#f7f7f7;
+    }
+    .ranking-top3 td{
+      background:#fff4ea;
+    }
+    .ranking-empty{
+      padding:26px 12px;
+      text-align:center;
+      color:var(--muted);
+    }
+    .ranking-close{
+      width:100%;
+      margin-top:22px;
+      background:#222;
+      color:#fff;
+    }
+
+  
+    .winner-card{
+      border:1px solid #ead47a;
+      background:#fff9dc;
+      border-radius:14px;
+      padding:16px;
+      margin-bottom:20px;
+    }
+    .winner-card.no-winner{
+      border-color:#e5e7eb;
+      background:#f8f8f8;
+    }
+    .winner-title{
+      font-weight:900;
+      font-size:17px;
+      margin-bottom:8px;
+    }
+    .winner-name{
+      font-size:18px;
+      font-weight:900;
+      margin-bottom:8px;
+    }
+    .winner-stats{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .winner-stat{
+      background:#ffffff;
+      border:1px solid #e5e7eb;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:13px;
+      font-weight:800;
+    }
+    .ranking-section-title{
+      font-weight:900;
+      font-size:17px;
+      margin:4px 0 10px;
+    }
+
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="header">
+      <img src="https://f6continentefeedpublico.blob.core.windows.net/feed/combina/logo-combina.png" alt="Logo Combina" />
+      
+      <h1>Incentivo Combina</h1>
+      
+    </section>
+
+    <div class="tabs">
+      <button class="tab tab-combina active" data-tab="combina">COMBINA</button>
+      <button class="tab tab-energia" data-tab="energia">ENERGIA</button>
+      <button id="abrirFaq" class="tab faq-tab" type="button">FAQ</button>
+      <button id="abrirRanking" class="tab ranking-tab" type="button">Ranking</button>
+    </div>
+
+    <section class="card form-card" id="combina">
+      <h2 class="titulo-combina">COMBINA</h2>
+      <form id="formCombina">
+        <div class="grid">
+          <div class="field">
+            <label for="combinaNome">Nome do AL</label>
+            <select id="combinaNome" name="nome" required>
+              <option value="" selected disabled>Selecionar AL</option>
+              <option value="MIGUEL ANTONIO BORGES">MIGUEL ANTONIO BORGES</option>
+              <option value="LUIS BOTELHO">LUIS BOTELHO</option>
+              <option value="FILIPA ISABEL CORREIA">FILIPA ISABEL CORREIA</option>
+              <option value="SAJA TAJOURI">SAJA TAJOURI</option>
+              <option value="LUIZ RAVAZZI">LUIZ RAVAZZI</option>
+              <option value="CRISTIANO BRANDAO">CRISTIANO BRANDAO</option>
+              <option value="ALINE BALDERAMMA">ALINE BALDERAMMA</option>
+              <option value="RAFAELA CRUZ">RAFAELA CRUZ</option>
+              <option value="LORDES DEMBA">LORDES DEMBA</option>
+              <option value="JOÃO NUNES">JOÃO NUNES</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="combinaConta">Conta de Cliente</label>
+            <input id="combinaConta" name="conta" type="text" required placeholder="N.º da conta" />
+          </div>
+          <div class="field">
+            <label for="combinaData">Data do Registo</label>
+            <input id="combinaDataVisivel" type="text" readonly aria-readonly="true" tabindex="-1" />
+            <input id="combinaData" name="data" type="hidden" />
+          </div>
+          <div class="field">
+            <label for="combinaObs">Observações</label>
+            <input id="combinaObs" name="obs" type="text" placeholder="Opcional" />
+          </div>
+        </div>
+        <div class="actions">
+          <button class="primary" type="submit">Guardar registo</button>
+          <button class="secondary" type="reset">Limpar</button>
+        </div>
+        <div class="status" id="statusCombina"></div>
+      </form>
+    </section>
+
+    <section class="card form-card hidden" id="energia">
+      <h2 class="titulo-energia">ENERGIA</h2>
+      <form id="formEnergia">
+        <div class="grid">
+          <div class="field">
+            <label for="energiaNome">Nome do AL</label>
+            <select id="energiaNome" name="nome" required>
+              <option value="" selected disabled>Selecionar AL</option>
+              <option value="MIGUEL ANTONIO BORGES">MIGUEL ANTONIO BORGES</option>
+              <option value="LUIS BOTELHO">LUIS BOTELHO</option>
+              <option value="FILIPA ISABEL CORREIA">FILIPA ISABEL CORREIA</option>
+              <option value="SAJA TAJOURI">SAJA TAJOURI</option>
+              <option value="LUIZ RAVAZZI">LUIZ RAVAZZI</option>
+              <option value="CRISTIANO BRANDAO">CRISTIANO BRANDAO</option>
+              <option value="ALINE BALDERAMMA">ALINE BALDERAMMA</option>
+              <option value="RAFAELA CRUZ">RAFAELA CRUZ</option>
+              <option value="LORDES DEMBA">LORDES DEMBA</option>
+              <option value="JOÃO NUNES">JOÃO NUNES</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="energiaConta">Conta de Cliente</label>
+            <input id="energiaConta" name="conta" type="text" required placeholder="N.º da conta" />
+          </div>
+          <div class="field">
+            <label for="energiaData">Data do Registo</label>
+            <input id="energiaDataVisivel" type="text" readonly aria-readonly="true" tabindex="-1" />
+            <input id="energiaData" name="data" type="hidden" />
+          </div>
+          <div class="field">
+            <label for="energiaObs">Observações</label>
+            <input id="energiaObs" name="obs" type="text" placeholder="Opcional" />
+          </div>
+        </div>
+        <div class="actions">
+          <button class="primary" type="submit">Guardar registo</button>
+          <button class="secondary" type="reset">Limpar</button>
+        </div>
+        <div class="status" id="statusEnergia"></div>
+      </form>
+    </section>
+
+    
+    <section class="card">
+      <div id="recordsLocked" class="records-locked">
+        <button class="unlock-btn" id="abrirRegistos" type="button">Acesso GL</button>
+      </div>
+
+      <div id="recordsUnlocked" class="hidden">
+        <div class="records-head">
+          <div>
+            <h2>Registos guardados</h2>
+            <div class="small">Os dados ficam guardados neste navegador.</div>
+          </div>
+          <div class="right actions" style="margin-top:0">
+            <button class="secondary" id="exportar">Exportar CSV</button>
+            <button class="secondary" onclick="window.print()">Imprimir</button>
+            <button class="lock-btn" id="bloquearRegistos" type="button">Bloquear</button>
+            <button class="danger" id="apagarTudo">Apagar tudo</button>
+          </div>
+        </div>
+
+        <div id="tableWrap"></div>
+      </div>
+    </section>
+
+    <div id="passwordModal" class="password-modal hidden" aria-hidden="true">
+      <div class="password-box">
+        <h3>Acesso aos registos</h3>
+        <p>Introduza a palavra-passe para consultar os registos guardados.</p>
+        <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Palavra-passe" />
+        <div class="password-error" id="passwordError"></div>
+        <div class="actions">
+          <button class="primary" id="confirmarPassword" type="button">Entrar</button>
+          <button class="secondary" id="cancelarPassword" type="button">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const KEY = 'registos_vendas_combina_energia_v1';
+    function dataHojeISO(){
+      const agora = new Date();
+      return new Date(agora.getTime() - agora.getTimezoneOffset()*60000)
+        .toISOString().slice(0,10);
+    }
+
+    function dataHojeFormatada(){
+      const agora = new Date();
+      const dia = String(agora.getDate()).padStart(2,'0');
+      const mes = String(agora.getMonth() + 1).padStart(2,'0');
+      const ano = agora.getFullYear();
+      return `${dia}/${mes}/${ano}`;
+    }
+
+    function aplicarDataHoje(){
+      const iso = dataHojeISO();
+      const formatada = dataHojeFormatada();
+
+      document.getElementById('combinaData').value = iso;
+      document.getElementById('energiaData').value = iso;
+
+      document.getElementById('combinaDataVisivel').value = formatada;
+      document.getElementById('energiaDataVisivel').value = formatada;
+    }
+
+    aplicarDataHoje();
+
+    document.querySelectorAll('.tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.form-card').forEach(s => s.classList.add('hidden'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.remove('hidden');
+      });
+    });
+
+    function lerRegistos(){
+      try { return JSON.parse(localStorage.getItem(KEY)) || []; }
+      catch { return []; }
+    }
+
+    function guardarRegistos(lista){
+      localStorage.setItem(KEY, JSON.stringify(lista));
+    }
+
+    function adicionar(tipo, form, statusId){
+      const fd = new FormData(form);
+      const reg = {
+        id: Date.now(),
+        tipo,
+        nome: fd.get('nome').trim(),
+        conta: fd.get('conta').trim(),
+        data: fd.get('data'),
+        obs: fd.get('obs').trim()
+      };
+      const lista = lerRegistos();
+      lista.unshift(reg);
+      guardarRegistos(lista);
+      document.getElementById(statusId).textContent = 'Registo guardado com sucesso.';
+      form.reset();
+      aplicarDataHoje();
+      render();
+      setTimeout(() => document.getElementById(statusId).textContent = '', 2500);
+    }
+
+    document.getElementById('formCombina').addEventListener('submit', e => {
+      e.preventDefault();
+      adicionar('Combina', e.target, 'statusCombina');
+    });
+
+    document.getElementById('formEnergia').addEventListener('submit', e => {
+      e.preventDefault();
+      adicionar('Energia', e.target, 'statusEnergia');
+    });
+
+    document.getElementById('formCombina').addEventListener('reset', () => {
+      setTimeout(aplicarDataHoje, 0);
+    });
+
+    document.getElementById('formEnergia').addEventListener('reset', () => {
+      setTimeout(aplicarDataHoje, 0);
+    });
+
+    function formatarData(data){
+      if(!data) return '';
+      const [y,m,d] = data.split('-');
+      return `${d}/${m}/${y}`;
+    }
+
+    function escapeHTML(v){
+      return String(v ?? '')
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+
+    function apagar(id){
+      const lista = lerRegistos().filter(r => r.id !== id);
+      guardarRegistos(lista);
+      render();
+    }
+
+    function render(){
+      const lista = lerRegistos();
+      const wrap = document.getElementById('tableWrap');
+
+      if(!lista.length){
+        wrap.innerHTML = '<div class="empty">Ainda não existem registos.</div>';
+        return;
+      }
+
+      wrap.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Nome do AL</th>
+              <th>Conta de Cliente</th>
+              <th>Data</th>
+              <th>Observações</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${lista.map(r => `
+              <tr>
+                <td><span class="badge">${escapeHTML(r.tipo)}</span></td>
+                <td>${escapeHTML(r.nome)}</td>
+                <td>${escapeHTML(r.conta)}</td>
+                <td>${formatarData(r.data)}</td>
+                <td>${escapeHTML(r.obs || '-')}</td>
+                <td><button class="danger" onclick="apagar(${r.id})">Eliminar</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>`;
+    }
+
+    document.getElementById('apagarTudo').addEventListener('click', () => {
+      if(!recordsUnlocked) return;
+      if(confirm('Tem a certeza de que pretende apagar todos os registos?')){
+        localStorage.removeItem(KEY);
+        render();
+      }
+    });
+
+    document.getElementById('exportar').addEventListener('click', () => {
+      if(!recordsUnlocked) return;
+      const lista = lerRegistos();
+      if(!lista.length){
+        alert('Não existem registos para exportar.');
+        return;
+      }
+
+      const rows = [
+        ['Tipo','Nome do AL','Conta de Cliente','Data do Registo','Observações'],
+        ...lista.map(r => [r.tipo,r.nome,r.conta,formatarData(r.data),r.obs || ''])
+      ];
+
+      const csv = rows.map(row =>
+        row.map(v => `"${String(v).replaceAll('"','""')}"`).join(';')
+      ).join('\n');
+
+      const blob = new Blob(["\uFEFF" + csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'registos-vendas.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+
+    const PASSWORD_HASH = '6eb67de7afa1a2ac8b7fd9f83842bd292f54abf5dc938f5e92fd3af4f9f338c1';
+    let recordsUnlocked = false;
+
+    async function sha256(text){
+      const data = new TextEncoder().encode(text);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+    }
+
+    function abrirModalPassword(){
+      const modal = document.getElementById('passwordModal');
+      const input = document.getElementById('passwordInput');
+      const error = document.getElementById('passwordError');
+
+      error.textContent = '';
+      input.value = '';
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function fecharModalPassword(){
+      const modal = document.getElementById('passwordModal');
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+      document.getElementById('passwordInput').value = '';
+      document.getElementById('passwordError').textContent = '';
+    }
+
+    async function validarPassword(){
+      const input = document.getElementById('passwordInput');
+      const error = document.getElementById('passwordError');
+      const hash = await sha256(input.value);
+
+      if(hash === PASSWORD_HASH){
+        recordsUnlocked = true;
+        fecharModalPassword();
+        document.getElementById('recordsLocked').classList.add('hidden');
+        document.getElementById('recordsUnlocked').classList.remove('hidden');
+        render();
+      } else {
+        error.textContent = 'Palavra-passe incorreta.';
+        input.select();
+      }
+    }
+
+    function bloquearRegistos(){
+      recordsUnlocked = false;
+      document.getElementById('recordsUnlocked').classList.add('hidden');
+      document.getElementById('recordsLocked').classList.remove('hidden');
+      document.getElementById('tableWrap').innerHTML = '';
+    }
+
+    document.getElementById('abrirRegistos').addEventListener('click', abrirModalPassword);
+    document.getElementById('confirmarPassword').addEventListener('click', validarPassword);
+    document.getElementById('cancelarPassword').addEventListener('click', fecharModalPassword);
+    document.getElementById('bloquearRegistos').addEventListener('click', bloquearRegistos);
+
+    document.getElementById('passwordInput').addEventListener('keydown', e => {
+      if(e.key === 'Enter') validarPassword();
+      if(e.key === 'Escape') fecharModalPassword();
+    });
+
+    document.getElementById('passwordModal').addEventListener('click', e => {
+      if(e.target.id === 'passwordModal') fecharModalPassword();
+    });
+
+    // Mantém os registos ocultos até autenticação.
+  
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const faqModal = document.getElementById('faqModal');
+      const abrirFaq = document.getElementById('abrirFaq');
+      const fecharFaq = document.getElementById('fecharFaq');
+
+      function mostrarFaq(){
+        if(!faqModal) return;
+        faqModal.classList.remove('hidden');
+        faqModal.setAttribute('aria-hidden', 'false');
+      }
+
+      function ocultarFaq(){
+        if(!faqModal) return;
+        faqModal.classList.add('hidden');
+        faqModal.setAttribute('aria-hidden', 'true');
+      }
+
+      if(abrirFaq) abrirFaq.addEventListener('click', mostrarFaq);
+      if(fecharFaq) fecharFaq.addEventListener('click', ocultarFaq);
+
+      if(faqModal){
+        faqModal.addEventListener('click', (e) => {
+          if(e.target === faqModal) ocultarFaq();
+        });
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape' && faqModal && !faqModal.classList.contains('hidden')){
+          ocultarFaq();
+        }
+      });
+    });
+
+  
+    document.addEventListener('contextmenu', function(event) {
+      event.preventDefault();
+    });
+
+    document.addEventListener('dragstart', function(event) {
+      event.preventDefault();
+    });
+
+  
+    document.addEventListener('DOMContentLoaded', () => {
+      const rankingModal = document.getElementById('rankingModal');
+      const abrirRanking = document.getElementById('abrirRanking');
+      const fecharRanking = document.getElementById('fecharRanking');
+      const rankingConteudo = document.getElementById('rankingConteudo');
+
+      const listaALs = [
+        'MIGUEL ANTONIO BORGES',
+        'LUIS BOTELHO',
+        'FILIPA ISABEL CORREIA',
+        'SAJA TAJOURI',
+        'LUIZ RAVAZZI',
+        'CRISTIANO BRANDAO',
+        'ALINE BALDERAMMA',
+        'RAFAELA CRUZ',
+        'LORDES DEMBA',
+        'JOÃO NUNES'
+      ];
+
+      function gerarRanking(){
+        const registos = lerRegistos();
+
+        const mapa = {};
+        listaALs.forEach(nome => {
+          mapa[nome] = { nome, combina:0, energia:0, total:0 };
+        });
+
+        registos.forEach(r => {
+          const nome = String(r.nome || '').trim().toUpperCase();
+
+          if(!mapa[nome]){
+            mapa[nome] = { nome, combina:0, energia:0, total:0 };
+          }
+
+          if(String(r.tipo).toLowerCase() === 'combina'){
+            mapa[nome].combina++;
+          } else if(String(r.tipo).toLowerCase() === 'energia'){
+            mapa[nome].energia++;
+          }
+
+          mapa[nome].total = mapa[nome].combina + mapa[nome].energia;
+        });
+
+        // Ranking atual de todos os ALs
+        const ranking = Object.values(mapa).sort((a,b) => {
+          if(b.total !== a.total) return b.total - a.total;
+          if(b.combina !== a.combina) return b.combina - a.combina;
+          if(b.energia !== a.energia) return b.energia - a.energia;
+          return a.nome.localeCompare(b.nome, 'pt-PT');
+        });
+
+        // Vencedor: mais de 50 Combinas e pelo menos 5 Energias
+        const elegiveis = ranking.filter(r => r.combina > 50 && r.energia >= 5);
+        const vencedor = elegiveis.length ? elegiveis[0] : null;
+
+        const vencedorHTML = vencedor ? `
+          <div class="winner-card">
+            <div class="winner-title">🏆 Vencedor</div>
+            <div class="winner-name">${escapeHTML(vencedor.nome)}</div>
+            <div class="winner-stats">
+              <span class="winner-stat combina-num">${vencedor.combina} Combinas</span>
+              <span class="winner-stat energia-num">${vencedor.energia} Energias</span>
+            </div>
+          </div>
+        ` : `
+          <div class="winner-card no-winner">
+            <div class="winner-title">🏆 Vencedor</div>
+            <div>Ainda não existe vencedor.</div>
+            <div class="small" style="margin-top:6px;">
+              É necessário ter mais de 50 Combinas e pelo menos 5 Energias.
+            </div>
+          </div>
+        `;
+
+        const linhas = ranking.map((r, i) => {
+          const pos = i + 1;
+          const medalha = pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : pos;
+          const classe = pos === 1 ? 'ranking-top1' : pos === 2 ? 'ranking-top2' : pos === 3 ? 'ranking-top3' : '';
+
+          return `
+            <tr class="${classe}">
+              <td class="pos">${medalha}</td>
+              <td>${escapeHTML(r.nome)}</td>
+              <td class="num combina-num">${r.combina}</td>
+              <td class="num energia-num">${r.energia}</td>
+              <td class="num total-num">${r.total}</td>
+            </tr>
+          `;
+        }).join('');
+
+        rankingConteudo.innerHTML = `
+          ${vencedorHTML}
+
+          <div class="ranking-section-title">Ranking atual</div>
+
+          <div class="ranking-table-wrap">
+            <table class="ranking-table">
+              <thead>
+                <tr>
+                  <th class="pos">#</th>
+                  <th>AL</th>
+                  <th class="num">Combina</th>
+                  <th class="num">Energia</th>
+                  <th class="num">Total</th>
+                </tr>
+              </thead>
+              <tbody>${linhas}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      function mostrarRanking(){
+        gerarRanking();
+        rankingModal.classList.remove('hidden');
+        rankingModal.setAttribute('aria-hidden', 'false');
+      }
+
+      function ocultarRanking(){
+        rankingModal.classList.add('hidden');
+        rankingModal.setAttribute('aria-hidden', 'true');
+      }
+
+      if(abrirRanking) abrirRanking.addEventListener('click', mostrarRanking);
+      if(fecharRanking) fecharRanking.addEventListener('click', ocultarRanking);
+
+      if(rankingModal){
+        rankingModal.addEventListener('click', (e) => {
+          if(e.target === rankingModal) ocultarRanking();
+        });
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape' && rankingModal && !rankingModal.classList.contains('hidden')){
+          ocultarRanking();
+        }
+      });
+    });
+
+  </script>
+
+    <div id="faqModal" class="faq-modal hidden" aria-hidden="true">
+      <div class="faq-box" role="dialog" aria-modal="true" aria-labelledby="faqTitle">
+        <h3 id="faqTitle">💡 INCENTIVO COMBINA • GALP</h3>
+
+        <div class="faq-content">
+          <ul>
+            <li>50 Combinas por AL</li>
+            <li>5 Energias por AL</li>
+          </ul>
+
+          <div class="section-title">Critérios:</div>
+          <ul>
+            <li>Minino 10 combinas por AL;</li>
+            <li>1 Energia Ativa;</li>
+            <li>GCO &gt; 101%</li>
+          </ul>
+
+          <div class="section-title">Duração:</div>
+          <ul>
+            <li>01 de Outubro a 31 de Outubro</li>
+          </ul>
+
+          <div class="section-title">Prémio - Cartão Dá 50€:</div>
+          <ul>
+            <li>No dia do fecho do mês de Outubro (Inicios de Novembro)</li>
+          </ul>
+        </div>
+
+        <button id="fecharFaq" class="faq-close" type="button">Fechar</button>
+      </div>
+    </div>
+
+
+    <div id="rankingModal" class="ranking-modal hidden" aria-hidden="true">
+      <div class="ranking-box" role="dialog" aria-modal="true" aria-labelledby="rankingTitle">
+        <h3 id="rankingTitle">Ranking</h3>
+        <p class="ranking-subtitle">Posição atual dos ALs e identificação do vencedor quando cumprir os critérios.</p>
+
+        <div id="rankingConteudo"></div>
+
+        <button id="fecharRanking" class="ranking-close" type="button">Fechar</button>
+      </div>
+    </div>
+
+</body>
+</html>
