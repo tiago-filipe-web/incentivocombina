@@ -40,7 +40,7 @@
     .tab-combina.active{background:#e30613;color:#fff;border-color:#e30613;box-shadow:0 5px 14px rgba(227,6,19,.18)}
     .tab-energia.active{background:#f58220;color:#fff;border-color:#f58220;box-shadow:0 5px 14px rgba(245,130,32,.18)}
     .faq-tab{background:#fff;color:#222;border:1px solid #d1d5db}
-    .ranking-tab{background:#fff;color:#222;border:1px solid #d1d5db}
+    .ranking-tab{background:#fff;color:#222;border:1px solid #d1d5db;padding:7px 13px;font-size:12px;min-width:92px}
     .faq-tab:hover,.ranking-tab:hover{background:#f7f7f7}
 
     .card{
@@ -98,14 +98,15 @@
       background:linear-gradient(90deg,var(--accent-red),var(--accent-orange))
     }
 
-    .password-modal,.faq-modal,.ranking-modal,.success-modal{
+    .password-modal,.faq-modal,.ranking-modal,.success-modal,.error-modal{
       position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;
       justify-content:center;padding:20px;z-index:9999
     }
     .faq-modal{z-index:10000}
     .ranking-modal{z-index:10001}
     .success-modal{z-index:10002}
-    .password-box,.faq-box,.ranking-box,.success-box{
+    .error-modal{z-index:10003}
+    .password-box,.faq-box,.ranking-box,.success-box,.error-box{
       background:#fff;border-radius:18px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.28)
     }
     .password-box{width:min(420px,100%)}
@@ -116,6 +117,11 @@
     .success-box h3{margin:0 0 8px;font-size:20px}
     .success-box p{margin:0;color:var(--muted);font-size:14px}
     .success-close{width:100%;margin-top:20px;background:#222;color:#fff}
+    .error-box{width:min(420px,100%);text-align:center;background:#fff5f5;border:2px solid #e30613}
+    .error-icon{font-size:36px;margin-bottom:8px}
+    .error-box h3{margin:0 0 10px;color:#b42318;font-size:20px}
+    .error-box p{margin:0;color:#b42318;font-size:14px;font-weight:900;line-height:1.5;text-transform:uppercase}
+    .error-close{width:100%;margin-top:20px;background:#e30613;color:#fff}
     .password-box h3,.faq-box h3,.ranking-box h3{margin:0 0 10px}
     .password-box p,.ranking-subtitle{margin:0 0 16px;color:var(--muted);font-size:13px}
     .password-error{color:var(--danger);font-size:13px;font-weight:700;min-height:18px;margin-top:10px}
@@ -174,7 +180,6 @@
   <main class="wrap">
     <section class="header">
       <img src="https://f6continentefeedpublico.blob.core.windows.net/feed/combina/logo-combina.png" alt="Logo Combina" />
-      <h1>Incentivo Combina</h1>
     </section>
 
     <div class="tabs">
@@ -359,6 +364,15 @@
     </div>
   </div>
 
+  <div id="errorModal" class="error-modal hidden" aria-hidden="true">
+    <div class="error-box" role="alertdialog" aria-modal="true" aria-labelledby="errorTitle">
+      <div class="error-icon">⚠️</div>
+      <h3 id="errorTitle">ALERTA</h3>
+      <p>A CONTA DEVE COMEÇAR POR C E TER PELO MENOS 8 NÚMEROS.<br>EX: C32953951</p>
+      <button id="fecharError" class="error-close" type="button">FECHAR</button>
+    </div>
+  </div>
+
   <script>
     const KEY = 'registos_vendas_combina_energia_v1';
     const MIGRATION_FLAG = 'registos_supabase_migrated_v1';
@@ -441,6 +455,18 @@
       return String(valor || '').trim().toUpperCase();
     }
 
+    function mostrarErroConta(){
+      const modal = document.getElementById('errorModal');
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden','false');
+    }
+
+    function ocultarErroConta(){
+      const modal = document.getElementById('errorModal');
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden','true');
+    }
+
     function mostrarSuccess(){
       const modal = document.getElementById('successModal');
       modal.classList.remove('hidden');
@@ -461,10 +487,12 @@
       const conta = normalizarContaCliente(fd.get('conta'));
 
       if(!validarContaCliente(conta)){
-        alert('Conta de Cliente incorreta.\n\nA conta deve começar por C e ter pelo menos 8 números.\nExemplo: C42837485');
+        mostrarErroConta();
         const campoConta = form.querySelector('[name="conta"]');
-        campoConta.focus();
-        campoConta.select();
+        setTimeout(() => {
+          campoConta.focus();
+          campoConta.select();
+        }, 50);
         return;
       }
 
@@ -837,6 +865,12 @@
         if(e.target === successModal) ocultarSuccess();
       });
 
+      const errorModal = document.getElementById('errorModal');
+      document.getElementById('fecharError').addEventListener('click', ocultarErroConta);
+      errorModal.addEventListener('click', e => {
+        if(e.target === errorModal) ocultarErroConta();
+      });
+
       faqModal.addEventListener('click', e => {
         if(e.target === faqModal) ocultarFaq();
       });
@@ -849,6 +883,7 @@
           if(!faqModal.classList.contains('hidden')) ocultarFaq();
           if(!rankingModal.classList.contains('hidden')) ocultarRanking();
           if(!document.getElementById('successModal').classList.contains('hidden')) ocultarSuccess();
+          if(!document.getElementById('errorModal').classList.contains('hidden')) ocultarErroConta();
         }
       });
     });
