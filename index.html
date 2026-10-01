@@ -29,15 +29,16 @@
     .header img{max-width:360px;width:100%;height:auto;display:block;margin:0 auto 14px}
     .header h1{margin:0 0 6px;font-size:28px;color:var(--accent-dark)}
     .tabs{display:flex;flex-direction:column;align-items:center;gap:10px;margin:20px 0}
-    .tabs-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;width:100%}
+    .tabs-row{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;width:100%}
+    .tabs-row:first-child .tab{min-width:170px;text-align:center}
     .tab{
       border:1px solid var(--line);background:#fff;border-radius:999px;padding:11px 18px;
       cursor:pointer;font-weight:700;color:var(--accent-dark)
     }
-    .tab-combina{color:#e30613}
-    .tab-energia{color:#f58220}
-    .tab-combina.active{background:#e30613;color:#fff;border-color:#e30613}
-    .tab-energia.active{background:#f58220;color:#fff;border-color:#f58220}
+    .tab-combina{color:#e30613;border-color:#e30613;text-align:center}
+    .tab-energia{color:#f58220;border-color:#f58220;text-align:center}
+    .tab-combina.active{background:#e30613;color:#fff;border-color:#e30613;box-shadow:0 5px 14px rgba(227,6,19,.18)}
+    .tab-energia.active{background:#f58220;color:#fff;border-color:#f58220;box-shadow:0 5px 14px rgba(245,130,32,.18)}
     .faq-tab{background:#fff;color:#222;border:1px solid #d1d5db}
     .ranking-tab{background:#fff;color:#222;border:1px solid #d1d5db}
     .faq-tab:hover,.ranking-tab:hover{background:#f7f7f7}
@@ -46,9 +47,9 @@
       background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);
       margin-bottom:20px;border:1px solid var(--line)
     }
-    .card h2{margin:0 0 20px;font-size:21px}
-    .titulo-combina{color:#e30613}
-    .titulo-energia{color:#f58220}
+    .card h2{margin:0 0 20px;font-size:21px;text-align:center}
+    .titulo-combina{background:#e30613;color:#fff;text-align:center;border-radius:12px;padding:11px 16px;margin:0 auto 20px!important}
+    .titulo-energia{background:#f58220;color:#fff;text-align:center;border-radius:12px;padding:11px 16px;margin:0 auto 20px!important}
     .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
     label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}
     input,select,textarea{
@@ -136,6 +137,8 @@
     .ranking-section-title{font-weight:900;font-size:17px;margin:4px 0 10px}
 
     @media(max-width:700px){
+      .tabs-row:first-child{flex-wrap:nowrap}
+      .tabs-row:first-child .tab{min-width:0;flex:1;max-width:190px}
       .grid{grid-template-columns:1fr}
       .header{padding:22px}
       .card{padding:18px}
